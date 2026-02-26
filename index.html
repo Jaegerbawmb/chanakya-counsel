@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chanakya's Counsel</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+    html, body { min-height: 100vh; }
+    body {
+      background-color: #542d18;
+      background-attachment: fixed;
+      background-image:
+        /* grain texture */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeBlend in='SourceGraphic' mode='multiply'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23noise)' opacity='0.12'/%3E%3C/svg%3E"),
+        /* rich radial gradient using palette */
+        radial-gradient(ellipse at 20% 20%, #924b20 0%, #6c3b1d 35%, #542d18 65%, #804420 100%);
+      background-blend-mode: overlay, normal;
+      background-size: 512px 512px, cover;
+      min-height: 100vh;
+    }
+
+    /* Parchment texture for chat area */
+    .chat-area {
+      background-color: #f8f1e8;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0.3'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23paper)' opacity='0.06'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, #f8f1e8 0%, #e0ccb6 50%, #f8f1e8 100%);
+      background-blend-mode: multiply, normal;
+      background-size: 512px 512px, cover;
+    }
+
+    .chat-scroll::-webkit-scrollbar { width: 8px; }
+    .chat-scroll::-webkit-scrollbar-track { background: rgba(142,96,64,0.1); border-radius: 4px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background: rgba(142,96,64,0.35); border-radius: 4px; }
+    .chat-scroll::-webkit-scrollbar-thumb:hover { background: rgba(142,96,64,0.55); }
+
+    .suggestion-btn {
+      background: linear-gradient(135deg, #924b20 0%, #a05424 50%, #804420 100%);
+      border: 1px solid rgba(174,136,106,0.2);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(84,45,24,0.3);
+    }
+    .suggestion-btn:hover {
+      background: linear-gradient(135deg, #a05424 0%, #924b20 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(84,45,24,0.45);
+    }
+
+    .message-appear { animation: fadeSlideIn 0.4s ease-out; }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .typing-indicator span { animation: typingBounce 1.4s infinite ease-in-out; }
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    .ornament {
+      background: linear-gradient(90deg, transparent, rgba(248,241,232,0.55), transparent);
+      height: 1px;
+    }
+
+    .tab-label {
+      background: linear-gradient(135deg, #6c3b1d, #542d18);
+      border: 1px solid rgba(174,136,106,0.25);
+    }
+
+    .user-bubble {
+      background: linear-gradient(135deg, #924b20, #6c3b1d);
+      border: 1px solid rgba(174,136,106,0.2);
+      box-shadow: 0 2px 8px rgba(84,45,24,0.25);
+    }
+
+    .chanakya-bubble {
+      background: linear-gradient(135deg, rgba(248,241,232,0.97), rgba(224,204,182,0.85));
+      border: 1px solid rgba(142,96,64,0.18);
+      color: #542d18;
+      box-shadow: 0 2px 8px rgba(84,45,24,0.1);
+    }
+
+    .chanakya-avatar {
+      background: linear-gradient(135deg, #6c3b1d, #542d18);
+      border: 2px solid rgba(174,136,106,0.35);
+      box-shadow: 0 2px 8px rgba(84,45,24,0.3);
+    }
+
+    .input-area {
+      background: linear-gradient(135deg, #f8f1e8, #e0ccb6);
+      border: 2px solid rgba(146,75,32,0.25);
+      box-shadow: 0 4px 16px rgba(84,45,24,0.3);
+    }
+
+    .send-btn {
+      background: linear-gradient(135deg, #924b20, #6c3b1d);
+      box-shadow: 0 2px 8px rgba(84,45,24,0.3);
+      transition: all 0.3s ease;
+    }
+    .send-btn:hover {
+      background: linear-gradient(135deg, #a05424, #804420);
+      transform: scale(1.05);
+    }
+    .send-btn:active { transform: scale(0.95); }
+  </style>
+ </head>
+
+ <body class="m-0 p-0 overflow-auto">
+  <div class="w-full min-h-full flex flex-col px-4 py-6 md:px-8 md:py-8">
+
+   <!-- Header -->
+   <header class="text-center mb-6">
+    <h1 class="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider mb-3"
+        style="color: #f8f1e8; text-shadow: 2px 4px 12px rgba(0,0,0,0.45);">
+      Chanakya's Counsel
+    </h1>
+    <div class="ornament w-48 md:w-72 mx-auto mb-4"></div>
+    <p class="font-cormorant text-lg md:text-xl lg:text-2xl italic max-w-2xl mx-auto"
+       style="color: #e0ccb6; text-shadow: 0 1px 4px rgba(0,0,0,0.3);">
+      Ask Kautilya — the ancient master of statecraft and strategy.
+    </p>
+   </header>
+
+   <!-- Main -->
+   <main class="flex-1 flex flex-col max-w-4xl w-full mx-auto">
+
+    <!-- Chat Box -->
+    <div class="relative chat-area rounded-2xl flex flex-col flex-1 min-h-96 overflow-hidden"
+         style="border: 2px solid rgba(174,136,106,0.3); box-shadow: 0 8px 40px rgba(84,45,24,0.55);">
+
+     <div class="tab-label absolute top-0 left-4 text-amber-50 px-4 py-1.5 rounded-b-lg font-cinzel text-sm tracking-wide shadow-md">
+      Chatbot
+     </div>
+
+     <div id="chat-container" class="flex-1 overflow-y-auto chat-scroll p-6 pt-12 flex flex-col">
+      <!-- Suggestion Buttons -->
+      <div id="suggestions-container" class="flex-1 flex items-center justify-center">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl px-2">
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">How should a king deal with corrupt ministers?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">What does Chanakya say about the qualities of a good leader?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">How should a king manage his treasury?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">What is Chanakya's advice on dealing with enemies?</button>
+       </div>
+      </div>
+      <!-- Messages -->
+      <div id="messages-area" class="space-y-4 hidden"></div>
+     </div>
+    </div>
+
+    <!-- Input -->
+    <div class="mt-4 input-area rounded-xl p-3 flex items-center gap-3">
+     <input type="text" id="message-input" placeholder="Type a message…"
+            class="flex-1 bg-transparent font-cormorant text-lg outline-none px-3 py-2"
+            style="color: #542d18;"
+            onkeypress="if(event.key === 'Enter') sendMessage()">
+     <button onclick="sendMessage()" class="send-btn text-amber-50 p-3 rounded-lg shadow-md" aria-label="Send message">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M22 2L11 13"></path>
+       <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+      </svg>
+     </button>
+    </div>
+   </main>
+
+   <!-- Footer -->
+   <footer class="text-center mt-6">
+    <p class="font-cormorant text-sm" style="color: rgba(224,204,182,0.55);">
+     Wisdom from the Arthashastra • Ancient guidance for modern times
+    </p>
+   </footer>
+  </div>
+
+  <script>
+    let conversationStarted = false;
+
+    function askQuestion(question) {
+      document.getElementById('message-input').value = question;
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('message-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      if (!conversationStarted) {
+        document.getElementById('suggestions-container').classList.add('hidden');
+        document.getElementById('messages-area').classList.remove('hidden');
+        conversationStarted = true;
+      }
+
+      addMessage(message, 'user');
+      input.value = '';
+      showTypingIndicator();
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: message })
+        });
+        const data = await res.json();
+        hideTypingIndicator();
+        addMessage(data.response, 'chanakya');
+      } catch (error) {
+        hideTypingIndicator();
+        addMessage("The counsel of Chanakya is temporarily unavailable. Please try again.", 'chanakya');
+      }
+    }
+
+    function addMessage(text, sender) {
+      const messagesArea = document.getElementById('messages-area');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message-appear';
+
+      if (sender === 'user') {
+        messageDiv.innerHTML = `
+          <div class="flex justify-end">
+            <div class="user-bubble text-amber-50 px-4 py-3 rounded-2xl rounded-br-md max-w-xs md:max-w-md font-cormorant text-lg">
+              ${escapeHtml(text)}
+            </div>
+          </div>`;
+      } else {
+        messageDiv.innerHTML = `
+          <div class="flex justify-start gap-3">
+            <div class="chanakya-avatar w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+              <span class="font-cinzel text-lg" style="color: #e0ccb6;">क</span>
+            </div>
+            <div class="chanakya-bubble px-4 py-3 rounded-2xl rounded-bl-md max-w-xs md:max-w-lg font-cormorant text-base leading-relaxed whitespace-pre-line">
+              ${formatResponse(text)}
+            </div>
+          </div>`;
+      }
+
+      messagesArea.appendChild(messageDiv);
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const messagesArea = document.getElementById('messages-area');
+      const typingDiv = document.createElement('div');
+      typingDiv.id = 'typing-indicator';
+      typingDiv.className = 'message-appear';
+      typingDiv.innerHTML = `
+        <div class="flex justify-start gap-3">
+          <div class="chanakya-avatar w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+            <span class="font-cinzel text-lg" style="color: #e0ccb6;">क</span>
+          </div>
+          <div class="chanakya-bubble px-4 py-3 rounded-2xl rounded-bl-md">
+            <div class="typing-indicator flex gap-1">
+              <span class="w-2 h-2 rounded-full" style="background: #8e6040;"></span>
+              <span class="w-2 h-2 rounded-full" style="background: #8e6040;"></span>
+              <span class="w-2 h-2 rounded-full" style="background: #8e6040;"></span>
+            </div>
+          </div>
+        </div>`;
+      messagesArea.appendChild(typingDiv);
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      const typing = document.getElementById('typing-indicator');
+      if (typing) typing.remove();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatResponse(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/•/g, '<span style="color:#8e6040;">•</span>');
+    }
+  </script>
+ </body>
+</html>

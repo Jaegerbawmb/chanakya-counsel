@@ -7,7 +7,8 @@ A Retrieval-Augmented Generation (RAG) chatbot that enables users to query the A
 ![LangChain](https://img.shields.io/badge/LangChain-latest-orange?style=flat-square)
 ![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-purple?style=flat-square)
 
-<img width="1494" height="867" alt="Screenshot 2026-02-25 131559" src="https://github.com/user-attachments/assets/7474efac-9de0-4084-adbc-146400ecf358" />
+<img width="1356" height="868" alt="image" src="https://github.com/user-attachments/assets/d7c93a47-5929-4445-9f40-662095013ba6" />
+
 
 ---
 

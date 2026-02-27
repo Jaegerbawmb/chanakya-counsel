@@ -21,7 +21,7 @@ His magnum opus, the Arthashastra, is a comprehensive treatise spanning 15 books
 
 ## Overview
 
-Chanakya's Counsel is a full-stack AI application that grounds every response in the actual text of the Arthashastra. Upon receiving a user query, the system retrieves the most semantically relevant passages from a vector database and injects them into a structured prompt before invoking the language model. This ensures that all responses are contextually accurate and traceable to the source material, rather than relying on the model's general training knowledge.
+This is a fullstack RAG and LLM-supported system that grounds every response in the actual text of the Arthashastra. Upon receiving a user query, the system retrieves the most semantically relevant passages from a vector database and injects them into a structured prompt before invoking the language model. This ensures that all responses are contextually accurate and traceable to the source material, rather than relying on the model's general training knowledge.
 
 ---
 

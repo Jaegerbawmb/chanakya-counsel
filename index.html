@@ -145,10 +145,10 @@
       <!-- Suggestion Buttons -->
       <div id="suggestions-container" class="flex-1 flex items-center justify-center">
        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl px-2">
-        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">How should a king deal with corrupt ministers?</button>
-        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">What does Chanakya say about the qualities of a good leader?</button>
-        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">How should a king manage his treasury?</button>
-        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">What is Chanakya's advice on dealing with enemies?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">How should a king protect himself from being assassinated?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">How do you protect buyers from merchants who try to cheat them?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">What kinds of disguises do you recommend spies use to gather information?</button>
+        <button onclick="askQuestion(this.textContent.trim())" class="suggestion-btn text-amber-50 font-cormorant text-base md:text-lg px-4 py-3 rounded-xl text-left leading-snug">What sneaky tactics do you suggest using to capture an enemy's fort?</button>
        </div>
       </div>
       <!-- Messages -->
@@ -174,13 +174,15 @@
    <!-- Footer -->
    <footer class="text-center mt-6">
     <p class="font-cormorant text-sm" style="color: rgba(224,204,182,0.55);">
-     Wisdom from the Arthashastra • Ancient guidance for modern times
+     Wisdom from the Arthashastra • Ancient guidance from the Mauryan period
     </p>
    </footer>
   </div>
 
   <script>
     let conversationStarted = false;
+    let lastQuestion = "";
+
 
     function askQuestion(question) {
       document.getElementById('message-input').value = question;
@@ -190,6 +192,14 @@
     async function sendMessage() {
       const input = document.getElementById('message-input');
       const message = input.value.trim();
+      if (!message) return;
+
+      const fullMessage = message.split(" ").length < 5 && lastQuestion
+          ? `${lastQuestion} - ${message}`
+          : message;
+      lastQuestion = message;
+
+
       if (!message) return;
 
       if (!conversationStarted) {
@@ -206,7 +216,7 @@
         const res = await fetch("http://127.0.0.1:8000/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: message })
+          body: JSON.stringify({ message: fullMessage })
         });
         const data = await res.json();
         hideTypingIndicator();
